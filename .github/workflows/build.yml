@@ -1,4 +1,3 @@
-
 name: OMKAR MUSIC APK Build
 
 on:
@@ -24,17 +23,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      -       - name: Build APK
-        run: |
-          set +e
-          gradle assembleDebug --console=plain 2>&1 | tee build-log.txt
-          build_status=${PIPESTATUS[0]}
-          grep -n -i -E 'error:|e: |failed' build-log.txt | tail -40 || true
-          exit "$build_status"
+      - name: Build APK
+        run: gradle assembleDebug --stacktrace --info --console=plain
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: OMKAR-MUSIC-APK
           path: app/build/outputs/apk/debug/*.apk
-          
