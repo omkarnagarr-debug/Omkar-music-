@@ -24,8 +24,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
-        run: gradle assembleDebug --console=plain 2>&1 | tee build-log.txt; grep -n -i -E "error:|e: |failed" build-log.txt | tail -40; exit ${PIPESTATUS[0]}
+      -       - name: Build APK
+        run: |
+          set +e
+          gradle assembleDebug --console=plain 2>&1 | tee build-log.txt
+          build_status=${PIPESTATUS[0]}
+          grep -n -i -E 'error:|e: |failed' build-log.txt | tail -40 || true
+          exit "$build_status"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
